@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="col-md-6 mx-auto text-center">
+       <div class="header-title" style="padding-top: 20px;">
+          <a style="font-size: 20px;text-decoration: none;"class="" href="#">
+              Welcome Visitors.
+              </a>
+        <br>
+        </h1 style="font-size: 20px;">
+        Please enter your details.
+        <h1>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4 mx-auto">
+        <div class="myform form ">
+           <form action="/" method="POST" name="submit-details">
+            <div class="form-group">
+             <input type="text" name="visitor-name"  class="form-control my-input" id="name" placeholder="Visitor's Name" required>
+            </div>
+            <div class="form-group">
+             <input type="email" name="visitor-email"  class="form-control my-input" id="email" placeholder="Visitor's Email" required>
+            </div>
+            <div class="form-group">
+             <input type="text" name="visitor-phone" id="phone"  class="form-control my-input" placeholder="Visitor's Phone with country code" required>
+            </div>
+            <div class="text-center ">
+              </h1 style="font-size: 20px;">
+              Please enter host's details you have appointment with.
+              <h1>
+
+            </div>
+            <div class="form-group">
+                <input type="text" name="host-name"  class="form-control my-input" id="host-name" placeholder="Host's Name" required>
+               </div>
+               <div class="form-group">
+                <input type="email" name="host-email"  class="form-control my-input" id="host-email" placeholder="Host's Email" required>
+               </div>
+               <div class="form-group">
+                <input type="text" name="host-phone" id="host-phone"  class="form-control my-input" placeholder="Host's Phone with country code" required>
+               </div>
+            <div class="col-md-12 ">
+            </div>
+            <div class="form-group">
+              <!-- <button style="width: 350px;" type="button" class="btn btn-outline-primary">Submit details</button> -->
+              <input style="width: 350px;" class="btn btn-outline-primary" type="submit" name="Submit Details" placeholder="Submit Details">
+            </div>
+            <p class="small mt-3">By submiting details, you are indicating that you have read and agree to the <a href="#" class="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.
+            </p>
+           </form>
+        </div>
+       </div>
+      </div>
+    </div>
+{% endblock %}

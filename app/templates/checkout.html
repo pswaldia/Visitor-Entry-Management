@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="col-md-6 mx-auto text-center">
+       <div class="header-title" style="padding-top: 20px;">
+          <a style="font-size: 20px;text-decoration: none;"class="" href="#">
+              Thanks for visiting.
+              </a>
+        <br>
+        </h1 style="font-size: 20px;">
+        Please enter your email id for check out.
+        <h1>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4 mx-auto">
+        <div class="myform form ">
+           <form action="/" method="POST" name="checkout-details">
+            <div class="form-group">
+             <input type="email" name="visitor-email"  class="form-control my-input" id="email" placeholder="Visitor's Email" required>
+            </div>
+            <div class="form-group">
+              <!-- <button style="width: 350px;" type="button" class="btn btn-outline-primary">Submit details</button> -->
+              <input style="width: 350px;" class="btn btn-outline-primary" type="submit" name="Check Out">
+            </div>
+            <p class="small mt-3">Hope you had a nice visit. Please give us a <a href="#" class="ps-hero__content__link">feedback</a></p>
+            <p class="small mt-3">You will shortly receive an email stating your visit details.</p>
+           </form>
+        </div>
+       </div>
+      </div>
+    </div>
+{% endblock %}
