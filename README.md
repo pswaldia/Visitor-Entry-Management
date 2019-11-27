@@ -6,6 +6,7 @@ Flask provides simplicity, flexibility and fine-grained control and is suitable 
 ### Technology Stack
 - Flask
 - SQLite Database
+- SQLAlchemy
 - Bootstrap
 - HTML,CSS,Javascript
 - External APIs for email and sms facilities.
@@ -52,7 +53,7 @@ The step-by-step procedure of the Project:
 
 *NOTE*
 Nexmo api's use is very restricted for Indian demographics (for ex: ) and also free tier do not allow sending of
-more than 8-10 sms and that too is restrcited to some numbers. So this facility might not work . On the other hand email
+more than 8-10 sms and that too is restricted to some numbers. So this facility might not work . On the other hand email
 utility works smooth.
 
 ### Screenshots of email recieved by both visitor and the host
@@ -64,6 +65,10 @@ utility works smooth.
 ### Email recieved by the visitor containing the complete details of the visit.
 
 ![img](https://imgur.com/nKwT6zF.jpg)
+
+
+*NOTE*
+The emails recieved have been marked as SPAM as the email address used to send mail is not a trusted one (xyz@gmail.com).
 
 ## Installation
 ---
