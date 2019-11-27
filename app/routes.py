@@ -40,27 +40,53 @@ def index():
                     host_name=host_name,
                     host_email=host_email,
                     host_phone=host_phone)
-    print(visitor_email,visitor_name,visitor_phone,host_email,host_phone,host_name,datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     db.session.add(visitor)
     db.session.commit()
     message = Mail(
-    from_email=visitor_email,
+    from_email='xyz@gmail.com',      #this is company's mail id , through which the email will be sent
     to_emails=host_email,
-    subject="Visitor's details",
+    subject="Visitor's details:",
     html_content='<ol><li>Name:{}</li> <li>Email:{}</li> <li>Phone:{}</li><li>Check-in time : {}</li></ol>'.format(visitor_name,visitor_email,visitor_phone,time))
     try:
-      sg = SendGridAPIClient('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')
+      sg = SendGridAPIClient(os.getenv("SENDGRID_SECRET"))
       response = sg.send(message)
       print(response.status_code, response.body, response.headers)
+      return redirect('/')
     except:
-      return "Email not sent"
-    return redirect('/')
+      return redirect('/')
  
   else:
     return render_template("checkin.html")
 
 @app.route('/checkout',methods=['POST','GET'])
 def checkout():
-  return render_template("checkout.html")
+  exists=-1
+  if request.method=='POST':
+    email_id=request.form['visitor-email']
+    exists = visitor.query.filter_by(email=email_id).count()
+    if exists>0:
+      visitor.query.filter_by(email=email_id).first().checkout_time=datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+      n=visitor.query.filter_by(email=email_id).first().name
+      p=visitor.query.filter_by(email=email_id).first().phone
+      ci=visitor.query.filter_by(email=email_id).first().checkin_time
+      co=visitor.query.filter_by(email=email_id).first().checkout_time
+      message = Mail(
+      from_email='xyz@gmail.com',     #this is company's mail id , through which the email will be sent
+      to_emails=email_id,
+      subject="Your visit details:",
+      html_content='<ol><li>Name:{}</li> <li>Email:{}</li> <li>Phone:{}</li><li>Check-in time:{}</li><li>Check-out time:{}</li></ol>'.format(n,email_id,p,ci,co))
+      visitor.query.filter_by(email=email_id).delete()
+      db.session.commit()
+      try:
+        sg = SendGridAPIClient(os.getenv("SENDGRID_SECRET"))
+        response = sg.send(message)
+        print(response.status_code, response.body, response.headers)
+        return redirect('/')
+      except:
+        return redirect('/')
+    else:
+      exists=0
+      render_template("checkout.html",exists=exists)
+  return render_template("checkout.html",exists=exists)
 
   

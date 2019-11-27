@@ -17,7 +17,7 @@
       <div class="row">
        <div class="col-md-4 mx-auto">
         <div class="myform form ">
-           <form action="/" method="POST" name="checkout-details">
+           <form action="/checkout" method="POST" name="checkout-details">
             <div class="form-group">
              <input type="email" name="visitor-email"  class="form-control my-input" id="email" placeholder="Visitor's Email" required>
             </div>
@@ -26,7 +26,11 @@
               <input style="width: 350px;" class="btn btn-outline-primary" type="submit" name="Check Out">
             </div>
             <p class="small mt-3">Hope you had a nice visit. Please give us a <a href="#" class="ps-hero__content__link">feedback</a></p>
-            <p class="small mt-3">You will shortly receive an email stating your visit details.</p>
+            <p class="small mt-3">You will shortly receive an email stating your visit details.Please check your spam folder too, it might end up there as well.</p>
+            
+            {% if exists==0 %}
+            <p class="small mt-3" style="color:red">No visitor's record found. Try again</p>
+            {% endif %}
            </form>
         </div>
        </div>
