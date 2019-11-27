@@ -70,11 +70,12 @@ def checkout():
       p=visitor.query.filter_by(email=email_id).first().phone
       ci=visitor.query.filter_by(email=email_id).first().checkin_time
       co=visitor.query.filter_by(email=email_id).first().checkout_time
+      hn=visitor.query.filter_by(email=email_id).first().host_name
       message = Mail(
       from_email='xyz@gmail.com',     #this is company's mail id , through which the email will be sent
       to_emails=email_id,
       subject="Your visit details:",
-      html_content='<ol><li>Name:{}</li> <li>Email:{}</li> <li>Phone:{}</li><li>Check-in time:{}</li><li>Check-out time:{}</li></ol>'.format(n,email_id,p,ci,co))
+      html_content='<ol><li>Name:{}</li> <li>Email:{}</li> <li>Phone:{}</li><li>Check-in time:{}</li><li>Check-out time:{}</li><li>Host Name:{}</li></ol>'.format(n,email_id,p,ci,co,hn))
       visitor.query.filter_by(email=email_id).delete()
       db.session.commit()
       try:
