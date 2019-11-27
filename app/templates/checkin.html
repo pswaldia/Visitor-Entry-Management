@@ -17,7 +17,7 @@
       <div class="row">
        <div class="col-md-4 mx-auto">
         <div class="myform form ">
-           <form action="/" method="POST" name="submit-details">
+           <form action="/" method="POST" name="submit-details" autocomplete="off">
             <div class="form-group">
              <input type="text" name="visitor-name"  class="form-control my-input" id="name" placeholder="Visitor's Name" required>
             </div>
@@ -49,6 +49,9 @@
             </div>
             <p class="small mt-3">By submiting details, you are indicating that you have read and agree to the <a href="#" class="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.
             </p>
+            {% if present==1 %}
+            <p class="small mt-3" style="color:red">Duplicate email detected.Try again</p>
+            {% endif %}
            </form>
         </div>
        </div>

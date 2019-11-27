@@ -2,13 +2,19 @@ from app import app
 from flask import render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
 import os
+
+import nexmo
+
+client = nexmo.Client(key=os.getenv("NEXMO_KEY"), secret=os.getenv("NEXMO_SECRET"))
+
+
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+app.config['SQLALCHEMY_BINDS']={'record':'sqlite:///records.db'}
+
 db=SQLAlchemy(app)
 
 class Visitor(db.Model):
@@ -22,7 +28,22 @@ class Visitor(db.Model):
   host_phone=db.Column(db.String(20),nullable=False)
   def __repr__(self):
     return '<Visitor %r>' % self.email
+
 visitor=Visitor()
+
+class Record(db.Model):
+  __bind_key__='record'
+  checkin_time_r=db.Column(db.DateTime(),primary_key=True,default=datetime.utcnow())
+  email_r=db.Column(db.String(30),nullable=False)
+  name_r=db.Column(db.String(30),nullable=False)
+  phone_r=db.Column(db.String(20),nullable=False)
+  host_email_r=db.Column(db.String(30),nullable=False)
+  host_name_r=db.Column(db.String(30),nullable=False)
+  host_phone_r=db.Column(db.String(20),nullable=False)
+  def __repr__(self):
+    return '<Visitor %r>' % self.email_r
+
+record=Record()
 
 @app.route('/',methods=['POST','GET'])
 def index():
@@ -40,23 +61,46 @@ def index():
                     host_name=host_name,
                     host_email=host_email,
                     host_phone=host_phone)
-    db.session.add(visitor)
-    db.session.commit()
-    message = Mail(
-    from_email='xyz@gmail.com',      #this is company's mail id , through which the email will be sent
-    to_emails=host_email,
-    subject="Visitor's details:",
-    html_content='<ol><li>Name:{}</li> <li>Email:{}</li> <li>Phone:{}</li><li>Check-in time : {}</li></ol>'.format(visitor_name,visitor_email,visitor_phone,time))
-    try:
-      sg = SendGridAPIClient(os.getenv("SENDGRID_SECRET"))
-      response = sg.send(message)
-      print(response.status_code, response.body, response.headers)
-      return redirect('/')
-    except:
-      return redirect('/')
- 
+    record=Record(
+                    checkin_time_r=datetime.utcnow(),
+                    email_r=visitor_email, 
+                    name_r=visitor_name,      
+                    phone_r=visitor_phone, 
+                    host_name_r=host_name,
+                    host_email_r=host_email,
+                    host_phone_r=host_phone)
+    present=visitor.query.filter_by(email=visitor_email).count()
+    print(present)
+    if present==0:
+      db.session.add(visitor)
+      db.session.commit()
+      db.session.add(record)
+      db.session.commit()
+      message = Mail(
+      from_email='xyz@gmail.com',      #this is company's mail id , through which the email will be sent
+      to_emails=host_email,
+      subject="Visitor's details:",
+      html_content='<ol><li>Name:{}</li> <li>Email:{}</li> <li>Phone:{}</li><li>Check-in time : {}</li></ol>'.format(visitor_name,visitor_email,visitor_phone,time))
+      try:
+        client.send_message({
+          'from': 'Nexmo',
+          'to': host_phone,
+          'text': """Name:{}
+                     Email:{}
+                     Phone:{}
+                     Checkin-time:{}
+                  """.format(visitor_name,visitor_email,visitor_phone,time),
+         })
+        sg = SendGridAPIClient(os.getenv("SENDGRID_SECRET"))
+        response = sg.send(message)
+        print(response.status_code, response.body, response.headers)
+        return redirect('/')
+      except:
+        return redirect('/')
+    else:
+        return render_template("checkin.html",present=1) 
   else:
-    return render_template("checkin.html")
+    return render_template("checkin.html",present=-1)
 
 @app.route('/checkout',methods=['POST','GET'])
 def checkout():
@@ -79,6 +123,17 @@ def checkout():
       visitor.query.filter_by(email=email_id).delete()
       db.session.commit()
       try:
+        client.send_message({
+          'from': 'Nexmo',
+          'to': p,
+          'text': """Name:{}
+                     Email:{}
+                     Phone:{}
+                     Checkin-time:{}
+                     Checkout-time:{}
+                     Host-Name:{}
+                  """.format(visitor_name,visitor_email,visitor_phone,ci,co,hn),
+         })
         sg = SendGridAPIClient(os.getenv("SENDGRID_SECRET"))
         response = sg.send(message)
         print(response.status_code, response.body, response.headers)
